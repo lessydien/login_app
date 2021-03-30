@@ -48,7 +48,7 @@ class MyLoginPage extends StatefulWidget {
 }
 
 class _MyHomeLoginState extends State<MyLoginPage> {
-
+  bool _tampilpass = true;
   String _username;
   final mystyle = TextStyle(fontSize: 30 ,  color: Colors.indigo );
   final mytextinput = TextStyle(fontSize: 14 , color: Colors.black);
@@ -92,17 +92,25 @@ class _MyHomeLoginState extends State<MyLoginPage> {
   //   obscureText: true,
   //  // focusNode: focus,
   // );
+  FocusNode focus = FocusNode();
+
+  @override
+  void initState(){
+    super.initState();
+    //focus = FocusNode();
+  }
 
   final _formKey = GlobalKey<FormState>();
 
+  void tooglePass() {
+    setState ((){
+      _tampilpass = !_tampilpass;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -110,12 +118,12 @@ class _MyHomeLoginState extends State<MyLoginPage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
-        margin: EdgeInsets.all(10.0),
-        padding: EdgeInsets.all(10.0),
-        alignment: Alignment.center,
+        child: SingleChildScrollView(
+        // margin: EdgeInsets.all(10.0),
+        // padding: EdgeInsets.all(10.0),
+        // alignment: Alignment.center,
         //width: double.infinity,
-            height: double.infinity,
+        //     height: double.infinity,
             //width:MediaQuery.of(context).size.width
        // height: 200,
        // decoration: BoxDecoration(
@@ -127,6 +135,7 @@ class _MyHomeLoginState extends State<MyLoginPage> {
        // //   borderRadius: BorderRadius.circular(8.0),
        //   // border: Border.all(),
        //  ),
+          padding: const EdgeInsets.all(10.0),
             child: Form(
               key: _formKey,
             child: Column (
@@ -156,17 +165,18 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                       flex: 3,
                       child: TextFormField(
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.text,
                         autofocus: false,
+                        onFieldSubmitted: (value){
+                          FocusScope.of(context).requestFocus(focus);
+                        },
                         //initialValue: 'name@gmail.com',
                         decoration: InputDecoration(
-                           hintText: 'username',
-                            labelText: 'username',
+                           // hintText: 'username',
+                           //  labelText: 'username',
                           isDense: true,
                           suffixIcon: InkWell(
-                            child: Icon(
-                              Icons.remove_red_eye_rounded, size: 14
-                            ),
+                            child: Icon(Icons.person, size: 24),
                             onTap: () {}
                           ),
                           suffixIconConstraints: BoxConstraints(
@@ -174,8 +184,8 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                               minHeight:2
                           ),
                           //controller: _controllerpass,
-                          contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3.0))
+                          // contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
+                          // border: OutlineInputBorder(borderRadius: BorderRadius.circular(3.0))
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -203,8 +213,21 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                          flex: 3,
                          child: TextFormField(
                            keyboardType: TextInputType.text,
+                           textInputAction: TextInputAction.done,
                            autofocus: false,
+
                            decoration: InputDecoration(
+                             suffixIcon: InkWell(
+                                 child: Icon( _tampilpass?Icons.visibility :
+                                     Icons.visibility_off, size: 24
+                                 ),
+                                 onTap: tooglePass
+                             ),
+                             suffixIconConstraints: BoxConstraints(
+                                 minWidth:2,
+                                 minHeight:2
+                             ),
+                             isDense: true,
                              /*  icon: const Padding(
           padding: const EdgeInsets.only(top: 15.0),
           child: const Icon(Icons.lock),
@@ -216,8 +239,8 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                              //contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                              //border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))
                            ),
-                           obscureText: true,
-                           // focusNode: focus,
+                           obscureText: _tampilpass,
+                           focusNode: focus,
                          )
                      ),
 
