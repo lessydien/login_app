@@ -52,6 +52,8 @@ class _MyHomeLoginState extends State<MyLoginPage> {
   String _username;
   final mystyle = TextStyle(fontSize: 30 ,  color: Colors.indigo );
   final mytextinput = TextStyle(fontSize: 14 , color: Colors.black);
+  final mycontroller = TextEditingController();
+
 
   // final userfield = TextFormField(
   //   textInputAction: TextInputAction.next,
@@ -97,8 +99,22 @@ class _MyHomeLoginState extends State<MyLoginPage> {
   @override
   void initState(){
     super.initState();
+    mycontroller.addListener(_printLatestValue);
     //focus = FocusNode();
   }
+  _printLatestValue() {
+    print("Second text field: ${mycontroller.text}");
+  }
+
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    mycontroller.dispose();
+    super.dispose();
+  }
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -183,7 +199,7 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                             minWidth:2,
                               minHeight:2
                           ),
-                          //controller: _controllerpass,
+
                           // contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
                           // border: OutlineInputBorder(borderRadius: BorderRadius.circular(3.0))
                         ),
@@ -195,7 +211,9 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                           //value.isEmpty ? 'username tidak boleh kosong' : null;
                         },
                         onSaved: (value) => _username=value,
+                        controller: mycontroller,
                       ),
+
                     )
                  ],
 
