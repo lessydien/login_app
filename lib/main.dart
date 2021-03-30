@@ -53,45 +53,45 @@ class _MyHomeLoginState extends State<MyLoginPage> {
   final mystyle = TextStyle(fontSize: 30 ,  color: Colors.indigo );
   final mytextinput = TextStyle(fontSize: 14 , color: Colors.black);
 
-  final userfield = TextFormField(
-    textInputAction: TextInputAction.next,
-    keyboardType: TextInputType.emailAddress,
-    autofocus: false,
-    //initialValue: 'name@gmail.com',
-    decoration: InputDecoration(
-    // hintText: 'username',
-    //  labelText: 'username',
-      //contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
-   // border: OutlineInputBorder(borderRadius: BorderRadius.circular(3.0))
-    ),
-    // validator: (value) {
-    //   if (value == null || value.isEmpty) {
-    //     return 'username tidak boleh kosong';
-    //   }
-    //   return null;
-    //   //value.isEmpty ? 'username tidak boleh kosong' : null;
-    // },
-    //onSaved: (value) => _username=value,
-  );
+  // final userfield = TextFormField(
+  //   textInputAction: TextInputAction.next,
+  //   keyboardType: TextInputType.emailAddress,
+  //   autofocus: false,
+  //   //initialValue: 'name@gmail.com',
+  //   decoration: InputDecoration(
+  //   // hintText: 'username',
+  //   //  labelText: 'username',
+  //     //contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
+  //  // border: OutlineInputBorder(borderRadius: BorderRadius.circular(3.0))
+  //   ),
+  //   // validator: (value) {
+  //   //   if (value == null || value.isEmpty) {
+  //   //     return 'username tidak boleh kosong';
+  //   //   }
+  //   //   return null;
+  //   //   //value.isEmpty ? 'username tidak boleh kosong' : null;
+  //   // },
+  //   //onSaved: (value) => _username=value,
+  // );
 
-  final passfield = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      decoration: InputDecoration(
-      /*  icon: const Padding(
-          padding: const EdgeInsets.only(top: 15.0),
-          child: const Icon(Icons.lock),
-        ),
-        */
-      //  hintText: 'password',
-     //  labelText: 'password',
-       
-        //contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-       //border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))
-      ),
-    obscureText: true,
-   // focusNode: focus,
-  );
+  // final passfield = TextFormField(
+  //     keyboardType: TextInputType.text,
+  //     autofocus: false,
+  //     decoration: InputDecoration(
+  //     /*  icon: const Padding(
+  //         padding: const EdgeInsets.only(top: 15.0),
+  //         child: const Icon(Icons.lock),
+  //       ),
+  //       */
+  //     //  hintText: 'password',
+  //    //  labelText: 'password',
+  //
+  //       //contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+  //      //border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))
+  //     ),
+  //   obscureText: true,
+  //  // focusNode: focus,
+  // );
 
   final _formKey = GlobalKey<FormState>();
 
@@ -160,10 +160,22 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                         autofocus: false,
                         //initialValue: 'name@gmail.com',
                         decoration: InputDecoration(
-                          // hintText: 'username',
-                          //  labelText: 'username',
-                          //contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
-                          // border: OutlineInputBorder(borderRadius: BorderRadius.circular(3.0))
+                           hintText: 'username',
+                            labelText: 'username',
+                          isDense: true,
+                          suffixIcon: InkWell(
+                            child: Icon(
+                              Icons.remove_red_eye_rounded, size: 14
+                            ),
+                            onTap: () {}
+                          ),
+                          suffixIconConstraints: BoxConstraints(
+                            minWidth:2,
+                              minHeight:2
+                          ),
+                          //controller: _controllerpass,
+                          contentPadding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 10.0),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3.0))
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -189,7 +201,24 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                      Text(": ", style: mytextinput),
                      Expanded(
                          flex: 3,
-                         child: passfield
+                         child: TextFormField(
+                           keyboardType: TextInputType.text,
+                           autofocus: false,
+                           decoration: InputDecoration(
+                             /*  icon: const Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: const Icon(Icons.lock),
+        ),
+        */
+                             //  hintText: 'password',
+                             //  labelText: 'password',
+
+                             //contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                             //border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))
+                           ),
+                           obscureText: true,
+                           // focusNode: focus,
+                         )
                      ),
 
                          //onPressed: _toggle,
@@ -208,12 +237,15 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                         child: OutlinedButton.icon(
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              // ScaffoldMessenger.of(context)
-                              //     .showSnackBar(SnackBar(content: Text('Processing Data')));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(content: Text('Processing Data')));
                               print('proses data');
-                            //  _formKey.currentState.save();
-                             // print('$_username');
-
+                              _formKey.currentState.save();
+                              // simpan ke object user
+                              // object ini kirim ke server untuk di cek
+                              // klo berhasil
+                             print('$_username');
+                            // pengecekan ke API data menggunakan http connection
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => HalamanUtama()),
