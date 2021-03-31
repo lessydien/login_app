@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HalamanUtama extends StatelessWidget {
+class HalamanDepan extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _HalamanDepanState();
+
+
+}
+
+class _HalamanDepanState extends State<HalamanDepan> {
   static String tag = 'home-page';
+  String nim;
+  String nama;
+  getDataMahasiswa() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nim = (prefs.getString('nim') ?? '');
+      nama = (prefs.getString('nama') ?? '');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getDataMahasiswa();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +35,7 @@ class HalamanUtama extends StatelessWidget {
         child: CircleAvatar(
           radius: 72.0,
           backgroundColor: Colors.transparent,
-          backgroundImage: AssetImage('assets/alucard.jpg'),
+          backgroundImage: AssetImage('assets/images/logo.png'),
         ),
       ),
     );
@@ -20,7 +43,7 @@ class HalamanUtama extends StatelessWidget {
     final welcome = Padding(
       padding: EdgeInsets.all(8.0),
       child: Text(
-        'Welcome Alucard',
+        'Selamat Datang $nama ',
         style: TextStyle(fontSize: 28.0, color: Colors.white),
       ),
     );
@@ -28,7 +51,7 @@ class HalamanUtama extends StatelessWidget {
     final lorem = Padding(
       padding: EdgeInsets.all(8.0),
       child: Text(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec hendrerit condimentum mauris id tempor. Praesent eu commodo lacus. Praesent eget mi sed libero eleifend tempor. Sed at fringilla ipsum. Duis malesuada feugiat urna vitae convallis. Aliquam eu libero arcu.',
+        '$nim.',
         style: TextStyle(fontSize: 16.0, color: Colors.white),
       ),
     );
