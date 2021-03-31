@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login_app/HalamanUtama.dart';
+import 'package:http/http.dart' as http;
+
 
 void main() {
   runApp(MyApp());
@@ -13,15 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Halaman login',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+
         primarySwatch: Colors.blue,
       ),
       home: MyLoginPage(title: 'Login'),
@@ -32,14 +26,6 @@ class MyApp extends StatelessWidget {
 class MyLoginPage extends StatefulWidget {
   MyLoginPage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -50,6 +36,7 @@ class MyLoginPage extends StatefulWidget {
 class _MyHomeLoginState extends State<MyLoginPage> {
   bool _tampilpass = true;
   String _username;
+  String _pass;
   final mystyle = TextStyle(fontSize: 30 ,  color: Colors.indigo );
   final mytextinput = TextStyle(fontSize: 14 , color: Colors.black);
   final mycontroller = TextEditingController();
@@ -122,6 +109,17 @@ class _MyHomeLoginState extends State<MyLoginPage> {
     setState ((){
       _tampilpass = !_tampilpass;
     });
+  }
+
+  void _showAlert(BuildContext context, String status) {
+    showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title: Text("STATUS LOGIN"),
+              content: Text(status),
+            )
+    );
   }
 
   @override
@@ -259,6 +257,14 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                            ),
                            obscureText: _tampilpass,
                            focusNode: focus,
+                             onSaved: (value) => _pass=value,
+                           validator:(value) {
+                             if (value == null || value.isEmpty) {
+                               return 'password tidak boleh kosong';
+                             }
+                             return null;
+                             //value.isEmpty ? 'username tidak boleh kosong' : null;
+                           }
                          )
                      ),
 
@@ -276,21 +282,38 @@ class _MyHomeLoginState extends State<MyLoginPage> {
                   children: <Widget>[
                     Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState.validate()) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(content: Text('Processing Data')));
+                            //  ScaffoldMessenger.of(context)
+                             //     .showSnackBar(SnackBar(content: Text('Processing Data')));
                               print('proses data');
                               _formKey.currentState.save();
                               // simpan ke object user
                               // object ini kirim ke server untuk di cek
                               // klo berhasil
-                             print('$_username');
+                              print('$_username');
+                              final String apiUrl = "http://192.168.43.249/flutterapp/login.php";
+                              final response = await http.post(Uri.parse(apiUrl), body:{
+                                'user' : _username,
+                                'pass' : _pass,
+
+                              });
+                              if (response.statusCode == 200) {
+                                //final String responseString = response.body;
+                                // savePref(nik,nama,telp,alamat,umur,kec,desa,jk);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => HalamanUtama()),
+                                );
+                                return true;
+                              }
+                              else {
+                                _showAlert(context, 'ERROR JARINGAN !');
+                                throw Exception('Failed to load data');
+                              }
                             // pengecekan ke API data menggunakan http connection
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => HalamanUtama()),
-                              );
+
+
                             }
                             else {
                               print('tidak valid');
